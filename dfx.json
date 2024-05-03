@@ -1,0 +1,27 @@
+{
+  "canisters": {
+    "addRelease_backend": {
+      "candid": "src/addRelease_backend/addRelease_backend.did",
+      "package": "addRelease_backend",
+      "type": "rust"
+    },
+    "addRelease_frontend": {
+      "dependencies": [
+        "addRelease_backend"
+      ],
+      "source": [
+        "src/addRelease_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "addRelease_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
