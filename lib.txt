@@ -3,37 +3,26 @@ use ic_cdk_macros::*;
 use serde::Serialize;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
-use sha2::{Sha256, Digest};
 
 #[derive(Clone, Debug, CandidType, Deserialize, Serialize)]
 struct Release {
     id: String,
     version: String,
-    features: String,
-    wasm_file: Vec<u8>,
-    wasm_hash: String, // Add this line
+    release_date: String,
+    release_notes: String,
 }
 
 thread_local! {
     static RELEASES: RefCell<BTreeMap<String, Release>> = RefCell::default();
 }
 
-fn hash_wasm_file(wasm_file: &[u8]) -> String {
-    let mut hasher = Sha256::new();
-    hasher.update(wasm_file);
-    let result = hasher.finalize();
-    format!("{:x}", result)
-}
-
 #[update]
-fn create_release(id: String, version: String, features: String, wasm_file: Vec<u8>) -> String {
-    let wasm_hash = hash_wasm_file(&wasm_file); // Hash the wasm file
+fn create_release(id: String, version: String, release_date: String, release_notes: String) -> String {
     let release = Release {
         id: id.clone(),
         version,
-        features,
-        wasm_file,
-        wasm_hash, // Add this line
+        release_date,
+        release_notes,
     };
     RELEASES.with(|releases| {
         releases.borrow_mut().insert(id.clone(), release);
@@ -47,14 +36,12 @@ fn get_release(release_id: String) -> Option<Release> {
 }
 
 #[update]
-fn update_release(id: String, version: String, features: String, wasm_file: Vec<u8>) -> String {
-    let wasm_hash = hash_wasm_file(&wasm_file); // Hash the wasm file
+fn update_release(id: String, version: String, release_date: String, release_notes: String) -> String {
     let release = Release {
         id: id.clone(),
         version,
-        features,
-        wasm_file,
-        wasm_hash, // Add this line
+        release_date,
+        release_notes,
     };
     RELEASES.with(|releases| {
         releases.borrow_mut().insert(id.clone(), release);

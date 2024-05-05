@@ -1,15 +1,14 @@
 type Release = record {
   id: text;
   version: text;
-  features: text;
-  wasm_file: blob;
-  wasm_hash: text; // Add this line
+  release_date: text;
+  release_notes: text;
 };
 
 service : {
-  create_release: (text, text, text, blob) -> (text);
+  create_release: (text, text, text, text) -> (text);
   get_release: (text) -> (opt Release);
-  update_release: (text, text, text, blob) -> (text);
+  update_release: (text, text, text, text) -> (text);
   delete_release: (text) -> (text);
   get_all_releases: () -> (vec Release);
 }
