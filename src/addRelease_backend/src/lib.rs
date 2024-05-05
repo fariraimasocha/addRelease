@@ -11,7 +11,7 @@ struct Release {
     version: String,
     features: String,
     wasm_file: Vec<u8>,
-    wasm_hash: String, // Add this line
+    wasm_hash: String,
 }
 
 thread_local! {
@@ -33,7 +33,7 @@ fn create_release(id: String, version: String, features: String, wasm_file: Vec<
         version,
         features,
         wasm_file,
-        wasm_hash, // Add this line
+        wasm_hash,
     };
     RELEASES.with(|releases| {
         releases.borrow_mut().insert(id.clone(), release);
@@ -54,7 +54,7 @@ fn update_release(id: String, version: String, features: String, wasm_file: Vec<
         version,
         features,
         wasm_file,
-        wasm_hash, // Add this line
+        wasm_hash,
     };
     RELEASES.with(|releases| {
         releases.borrow_mut().insert(id.clone(), release);

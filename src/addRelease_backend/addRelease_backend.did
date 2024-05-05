@@ -3,7 +3,7 @@ type Release = record {
   version: text;
   features: text;
   wasm_file: blob;
-  wasm_hash: text; // Add this line
+  wasm_hash: text;
 };
 
 service : {
