@@ -103,11 +103,11 @@ mod tests {
         let features = "test features".to_string();
         let wasm_file = vec![1, 2, 3, 4, 5];
 
-        // Test creating a release
+  
         let created_id = create_release(id.clone(), version.clone(), features.clone(), wasm_file.clone());
         assert_eq!(created_id, id);
 
-        // Test getting the created release
+ 
         let release = get_release(id.clone()).unwrap();
         assert_eq!(release.id, id);
         assert_eq!(release.version, version);
@@ -122,15 +122,15 @@ mod tests {
         let features = "test features".to_string();
         let wasm_file = vec![1, 2, 3, 4, 5];
 
-        // Create a release
+ 
         create_release(id.clone(), version.clone(), features.clone(), wasm_file.clone());
 
-        // Update the release
+
         let updated_version = "1.0.1".to_string();
         let updated_id = update_release(id.clone(), updated_version.clone(), features.clone(), wasm_file.clone());
         assert_eq!(updated_id, id);
 
-        // Check that the release was updated
+
         let release = get_release(id.clone()).unwrap();
         assert_eq!(release.version, updated_version);
     }
@@ -142,14 +142,11 @@ mod tests {
         let features = "test features".to_string();
         let wasm_file = vec![1, 2, 3, 4, 5];
 
-        // Create a release
         create_release(id.clone(), version.clone(), features.clone(), wasm_file.clone());
 
-        // Delete the release
         let message = delete_release(id.clone());
         assert_eq!(message, "Release deleted".to_string());
 
-        // Check that the release was deleted
         let release = get_release(id.clone());
         assert!(release.is_none());
     }
@@ -166,7 +163,6 @@ mod tests {
         let features2 = "test features 2".to_string();
         let wasm_file2 = vec![6, 7, 8, 9, 10];
 
-        // Create two releases
         create_release(id1.clone(), version1.clone(), features1.clone(), wasm_file1.clone());
         create_release(id2.clone(), version2.clone(), features2.clone(), wasm_file2.clone());
 
