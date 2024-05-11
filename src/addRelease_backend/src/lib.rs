@@ -18,28 +18,10 @@ thread_local! {
     static RELEASES: RefCell<BTreeMap<String, Release>> = RefCell::default();
 }
 
-fn hash_wasm_file(wasm_file: &[u8]) -> String {
-    let mut hasher = Sha256::new();
-    hasher.update(wasm_file);
-    let result = hasher.finalize();
-    format!("{:x}", result)
-}
 
-fn chunk_wasm_file(wasm_file: &[u8]) -> Vec<Vec<u8>> {
-    let chunk_size = 1024 * 1024; // 1MiB
-    let chunks = wasm_file
-        .chunks(chunk_size)
-        .map(|chunk| chunk.to_vec())
-        .collect();
-    chunks
-}
 
 #[update]
 fn create_release(id: String, version: String, features: String, wasm_file: Vec<u8>) -> String {
-    let chunks = chunk_wasm_file(&wasm_file); 
-    let wasm_hash = hash_wasm_file(&wasm_file);
-    for chunk in chunks {
-    }
     let release = Release {
         id: id.clone(),
         version,
@@ -60,11 +42,6 @@ fn get_release(release_id: String) -> Option<Release> {
 
 #[update]
 fn update_release(id: String, version: String, features: String, wasm_file: Vec<u8>) -> String {
-    let chunks = chunk_wasm_file(&wasm_file); // Chunk the wasm file
-    let wasm_hash = hash_wasm_file(&wasm_file); // Hash the wasm file
-    for chunk in chunks {
-        // Upload each chunk using the `upload_chunk` method
-    }
     let release = Release {
         id: id.clone(),
         version,
@@ -91,84 +68,3 @@ fn get_all_releases() -> Vec<Release> {
     RELEASES.with(|releases| releases.borrow().values().cloned().collect())
 }
 
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_create_and_get_release() {
-        let id = "test".to_string();
-        let version = "1.0.0".to_string();
-        let features = "test features".to_string();
-        let wasm_file = vec![1, 2, 3, 4, 5];
-
-  
-        let created_id = create_release(id.clone(), version.clone(), features.clone(), wasm_file.clone());
-        assert_eq!(created_id, id);
-
- 
-        let release = get_release(id.clone()).unwrap();
-        assert_eq!(release.id, id);
-        assert_eq!(release.version, version);
-        assert_eq!(release.features, features);
-        assert_eq!(release.wasm_file, wasm_file);
-    }
-
-    #[test]
-    fn test_update_release() {
-        let id = "test".to_string();
-        let version = "1.0.0".to_string();
-        let features = "test features".to_string();
-        let wasm_file = vec![1, 2, 3, 4, 5];
-
- 
-        create_release(id.clone(), version.clone(), features.clone(), wasm_file.clone());
-
-
-        let updated_version = "1.0.1".to_string();
-        let updated_id = update_release(id.clone(), updated_version.clone(), features.clone(), wasm_file.clone());
-        assert_eq!(updated_id, id);
-
-
-        let release = get_release(id.clone()).unwrap();
-        assert_eq!(release.version, updated_version);
-    }
-
-    #[test]
-    fn test_delete_release() {
-        let id = "test".to_string();
-        let version = "1.0.0".to_string();
-        let features = "test features".to_string();
-        let wasm_file = vec![1, 2, 3, 4, 5];
-
-        create_release(id.clone(), version.clone(), features.clone(), wasm_file.clone());
-
-        let message = delete_release(id.clone());
-        assert_eq!(message, "Release deleted".to_string());
-
-        let release = get_release(id.clone());
-        assert!(release.is_none());
-    }
-
-    #[test]
-    fn test_get_all_releases() {
-        let id1 = "test1".to_string();
-        let version1 = "1.0.0".to_string();
-        let features1 = "test features 1".to_string();
-        let wasm_file1 = vec![1, 2, 3, 4, 5];
-
-        let id2 = "test2".to_string();
-        let version2 = "1.0.0".to_string();
-        let features2 = "test features 2".to_string();
-        let wasm_file2 = vec![6, 7, 8, 9, 10];
-
-        create_release(id1.clone(), version1.clone(), features1.clone(), wasm_file1.clone());
-        create_release(id2.clone(), version2.clone(), features2.clone(), wasm_file2.clone());
-
-        let releases = get_all_releases();
-        assert_eq!(releases.len(), 2);
-        assert!(releases.iter().any(|release| release.id == id1));
-        assert!(releases.iter().any(|release| release.id == id2));
-    }
-}

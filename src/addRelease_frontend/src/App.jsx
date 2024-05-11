@@ -9,8 +9,16 @@ function App() {
     const [wasmFile, setWasmFile] = useState(null);
     const [releases, setReleases] = useState([]);
 
+
     const handleFileChange = (file) => {
-        setWasmFile(file);
+        console.log("File:", file); // Log the file data
+        const reader = new FileReader();
+        reader.onload = () => {
+            const arrayBuffer = reader.result;
+            const uint8Array = new Uint8Array(arrayBuffer);
+            setWasmFile(uint8Array);
+        };
+        reader.readAsArrayBuffer(file);
     }
 
     const handleReleaseCreation = async (event) => {
@@ -23,6 +31,8 @@ function App() {
             console.error(error);
         }
     }
+
+
 
     const handleReleaseRetrieval = async (event) => {
         event.preventDefault();
