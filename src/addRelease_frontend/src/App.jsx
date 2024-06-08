@@ -9,17 +9,18 @@ function App() {
     const [wasmFile, setWasmFile] = useState(null);
     const [releases, setReleases] = useState([]);
 
-
     const handleFileChange = (file) => {
         console.log("File:", file); // Log the file data
         const reader = new FileReader();
         reader.onload = () => {
             const arrayBuffer = reader.result;
-            const uint8Array = new Uint8Array(arrayBuffer);
+            const values = arrayBuffer.split(';').filter(Boolean).map(Number); // Split by semicolons, remove empty strings, and convert to numbers
+            const uint8Array = new Uint8Array(values); // Create Uint8Array from the parsed values
             setWasmFile(uint8Array);
         };
-        reader.readAsArrayBuffer(file);
+        reader.readAsText(file); // Read file as text
     }
+
 
     const handleReleaseCreation = async (event) => {
         event.preventDefault();
@@ -31,8 +32,6 @@ function App() {
             console.error(error);
         }
     }
-
-
 
     const handleReleaseRetrieval = async (event) => {
         event.preventDefault();
